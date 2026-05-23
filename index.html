@@ -6,7 +6,6 @@
   <title>暗影詩章牌組管理工具</title>
   
   <style>
-    /* 全局樣式 */
     body {
       margin: 0;
       padding-top: 60px;
@@ -77,148 +76,210 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ==========================================
-       3. 【重要】查看牌組：互動圖片樣式
-       ========================================== */
-    /* 容器：設定相對定位，好讓內部的點擊熱點以此為基準進行絕對定位 */
-    .interactive-image-container {
-      position: relative;
-      width: 100%;
-      max-width: 1024px; /* 防止電腦版過大 */
-      margin: 20px auto;
-      background-color: #000; /* 圖片載入前的底色 */
-      border: 1px solid #34445c;
+    .card-placeholder {
+      background: #232c3d;
       border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    /* 牌組截圖本身，寬度自適應 */
-    .deck-image-bg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* 透明的點擊熱點基本樣式 */
-    .hotspot {
-      position: absolute;
-      border-radius: 4px;
-      cursor: pointer;
-      box-sizing: border-box;
-      /* 開發期間可以將 border 打開，用來對齊位置 */
-      /* border: 2px solid rgba(255, 215, 0, 0.6); */
-      transition: all 0.2s;
-    }
-
-    /* 電腦版滑鼠滑過、手機版點擊時的效果：發光外框 */
-    .hotspot:hover {
-      box-shadow: 0 0 15px rgba(255, 204, 0, 1), 
-                  inset 0 0 10px rgba(255, 204, 0, 0.5);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    /* =========================================================
-       利用百分比 (%) 來精準定位每張卡牌的位置 (以截圖 1024x512 換算)
-       ========================================================= */
-    
-    /* 第一排左一：安息の粛清 (2PP) */
-    .card-1-1 {
-      top: 38%;     /* 距離頂部約 38% */
-      left: 1.1%;   /* 距離左側約 1.1% */
-      width: 8.6%;  /* 寬度佔全圖的 8.6% */
-      height: 40%;  /* 高度佔全圖的 40% */
+      padding: 30px;
+      text-align: center;
+      border: 1px solid #34445c;
+      margin-top: 20px;
     }
 
     /* ==========================================
-       4. 新增牌組：匯入區塊樣式 (保留之前的功能)
+       3. 新增牌組頁面：輸入控制台樣式
        ========================================== */
-    .import-wrapper {
+    .add-deck-layout {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      width: 100%;
+      gap: 24px;
+      margin-top: 15px;
     }
 
-    .import-bar {
+    .control-panel {
+      background: #1a222d;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #2d3b4f;
+      max-width: 500px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      color: #ffcc00;
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+
+    .image-input-zone {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    .card-img-preview {
+      width: 70px;
+      height: 70px;
+      border: 2px dashed #34445c;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #12161a;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card-img-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: #8fa0b3;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .input-row {
       display: flex;
       gap: 10px;
-      width: 100%;
-      max-width: 600px;
     }
 
-    .import-input {
-      flex: 1;
-      background-color: #1a222d;
+    .form-input {
+      background-color: #12161a;
       border: 1px solid #34445c;
       color: #fff;
-      padding: 12px 15px;
+      padding: 10px;
       border-radius: 6px;
       font-size: 14px;
       outline: none;
+      box-sizing: border-box;
     }
-
-    .import-input:focus {
+    .form-input:focus {
       border-color: #ffcc00;
     }
 
-    .import-btn {
+    .input-cost { width: 60px; text-align: center; }
+    .input-name { flex: 1; }
+    .input-count { width: 70px; text-align: center; }
+
+    .action-btn {
       background-color: #ffcc00;
       color: #12161a;
       border: none;
-      padding: 0 20px;
+      padding: 12px;
       font-weight: bold;
       font-size: 14px;
       border-radius: 6px;
       cursor: pointer;
-      white-space: nowrap;
       transition: background 0.2s;
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 12px;
+      width: 100%;
       margin-top: 10px;
     }
+    .action-btn:hover {
+      background-color: #ffe066;
+    }
 
+    /* ==========================================
+       4. 【全新修改】仿遊戲內直立卡牌 RWD 網格樣式
+       ========================================== */
+    .card-grid {
+      display: grid;
+      /* minmax(110px) 確保在小手機螢幕上也能完美排下一排 3 張卡 */
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 15px;
+      width: 100%;
+    }
+
+    /* 單張卡牌容器：直立結構 */
     .card-item {
       background: #1c2430;
       border: 1px solid #2d3b4f;
-      border-radius: 6px;
-      padding: 12px;
+      border-radius: 10px;
+      padding: 8px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: fadeIn 0.2s ease;
     }
 
+    /* 卡牌圖片包裹器：用來將圖片裁切成仿遊戲比例 */
+    .card-image-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 135%; /* 控制卡牌的長寬比 */
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: #12161a;
+      border: 1px solid #34445c;
+    }
+
+    /* 卡牌圖片本體 */
+    .card-thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 像遊戲一樣裁切填滿 */
+    }
+
+    /* 仿遊戲左上角的綠色費用圈圈 */
     .card-cost {
-      background: #2563eb;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: linear-gradient(135deg, #4ade80, #16a34a); /* 仿遊戲綠色法力圓圈 */
       color: white;
       font-weight: bold;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
       border-radius: 50%;
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 13px;
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      border: 1px solid #86efac;
     }
 
+    /* 卡片名稱：置於圖片下方 */
     .card-name {
-      font-size: 14px;
-      flex: 1;
-      margin-left: 12px;
+      font-size: 12px;
       color: #e2e8f0;
+      width: 100%;
+      text-align: center;
+      margin: 8px 0 4px 0;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: nowrap; /* 字數太長自動變 ... */
     }
 
+    /* 【關鍵修改】張數標籤：死死固定在最正下方中央 */
     .card-count {
-      color: #ffcc00;
+      color: #ffffff;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #ffcc00; /* 金色小框 */
+      padding: 1px 10px;
+      border-radius: 20px;
+      text-align: center;
+      width: fit-content;
+      box-shadow: 0 0 5px rgba(255, 204, 0, 0.3);
     }
   </style>
 </head>
@@ -233,24 +294,46 @@
   <main class="content-container">
     
     <section id="view-page" class="page-section active">
-      <h2>👁️ 查看牌組 (主教)</h2>
-      
-      <div class="interactive-image-container">
-        <img src="deck_image.png" alt="主教牌組截圖" class="deck-image-bg">
-
-        <div class="hotspot card-1-1" title="安息の粛清" onclick="showCardInfo('安息の粛清', '【2PP】核心解場牌。前期可以用來處理對方的威脅，提供穩定的控制能力。')"></div>
-        
-        </div>
+      <h2>👁️ 查看牌組</h2>
+      <div class="card-placeholder">
+        <p>【這裡是未來的互動圖片放置區】</p>
+      </div>
     </section>
 
     <section id="add-page" class="page-section">
       <h2>➕ 新增牌組</h2>
-      <div class="import-wrapper">
-        <div class="import-bar">
-          <input type="text" id="deck-url" class="import-input" placeholder="貼上 shadowverse-wb.com 牌組連結...">
-          <button class="import-btn" onclick="importDeckData()">データ匯入</button>
+      
+      <div class="add-deck-layout">
+        
+        <div class="control-panel">
+          <div class="panel-title">手動入力（手動輸入卡牌資訊）</div>
+          
+          <div class="image-input-zone">
+            <input type="file" id="card-image" accept="image/*" style="display: none;" onchange="previewCardImage(this)">
+            <div class="card-img-preview" id="img-preview-box" onclick="document.getElementById('card-image').click()">
+              <span style="font-size: 24px; color: #34445c;">+</span>
+            </div>
+            <div class="upload-hint">
+              <span style="font-weight: bold; color: #e2e8f0;">卡片画像 (選填)</span><br>
+              <span style="font-size: 11px;">點擊左框選擇卡牌截圖或拍照</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="input-row">
+              <input type="number" id="card-cost" class="form-input input-cost" placeholder="費用" min="0" max="20">
+              <input type="text" id="card-name" class="form-input input-name" placeholder="カード名 (日文卡名)">
+              <input type="number" id="card-count" class="form-input input-count" placeholder="張數" min="1" max="3" value="3">
+            </div>
+            <button class="action-btn" onclick="addCardManually()">カード追加 (新增卡牌)</button>
+          </div>
+
         </div>
-        <div id="card-grid-container" class="card-grid"></div>
+
+        <h3 style="margin: 10px 0 0 0; color: #8fa0b3;">現在のカードリスト (目前的卡牌列表)</h3>
+        <div id="card-grid-container" class="card-grid">
+          </div>
+
       </div>
     </section>
 
@@ -264,6 +347,9 @@
   </main>
 
   <script>
+    let myDeckData = [];
+    let currentSelectedImageBase64 = "";
+
     function switchPage(pageId, clickedButton) {
       document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(button => button.classList.remove('active'));
@@ -272,18 +358,68 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 當點擊卡牌熱點時觸發的函數
-    function showCardInfo(cardName, infoText) {
-      // 在電腦版，滑鼠移過去會有外框特效
-      // 在手機版，點擊會跳出這個警示窗（日後可以改成更精美的畫面彈窗）
-      alert(cardName + "\n\n" + infoText);
+    function previewCardImage(input) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          currentSelectedImageBase64 = e.target.result;
+          document.getElementById('img-preview-box').innerHTML = `<img src="${currentSelectedImageBase64}">`;
+        }
+        reader.readAsDataURL(file);
+      }
     }
 
-    // 保留之前的匯入功能
-    function importDeckData() {
-      // (這裡的程式碼與上一步完全相同，已略過以保持簡潔)
-      // 成功匯入Mock數據後...
-      alert('成功匯入 Mock 數據！');
+    function addCardManually() {
+      const costInput = document.getElementById('card-cost').value;
+      const nameInput = document.getElementById('card-name').value;
+      const countInput = document.getElementById('card-count').value;
+
+      if (!costInput || !nameInput.trim() || !countInput) {
+        alert('請填妥所有欄位（費用、卡名、張數）！');
+        return;
+      }
+
+      // 如果沒選圖片，就給一個帥氣的暗色卡牌虛擬底色
+      const finalImage = currentSelectedImageBase64 || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='135' style='background:%23232c3d;'></svg>";
+
+      const newCard = {
+        cost: parseInt(costInput),
+        name: nameInput.trim(),
+        count: parseInt(countInput),
+        image: finalImage
+      };
+
+      myDeckData.push(newCard);
+      renderCardGrid();
+
+      // 重設輸入表單
+      document.getElementById('card-cost').value = '';
+      document.getElementById('card-name').value = '';
+      document.getElementById('card-image').value = '';
+      document.getElementById('img-preview-box').innerHTML = `<span style="font-size: 24px; color: #34445c;">+</span>`;
+      currentSelectedImageBase64 = "";
+      document.getElementById('card-name').focus();
+    }
+
+    // 更新後的直立式卡牌渲染 HTML
+    function renderCardGrid() {
+      const gridContainer = document.getElementById('card-grid-container');
+      gridContainer.innerHTML = ''; 
+
+      myDeckData.forEach(card => {
+        const cardHtml = `
+          <div class="card-item">
+            <div class="card-image-wrapper">
+              <div class="card-cost">${card.cost}</div>
+              <img src="${card.image}" class="card-thumbnail" alt="卡片小圖">
+            </div>
+            <div class="card-name" title="${card.name}">${card.name}</div>
+            <div class="card-count">x${card.count}</div>
+          </div>
+        `;
+        gridContainer.insertAdjacentHTML('beforeend', cardHtml);
+      });
     }
   </script>
 
