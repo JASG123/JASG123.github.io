@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>暗影詩章牌組管理工具</title>
+  
+  <style>
+    /* 全局樣式：採用適合卡牌遊戲的暗色調 */
+    body {
+      margin: 0;
+      padding-top: 60px; /* 預留空間給固定在最上方的導覽列 */
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background-color: #12161a;
+      color: #e0e6ed;
+      -webkit-tap-highlight-color: transparent; /* 移除手機點擊時的藍色高亮 */
+    }
+
+    /* ==========================================
+       1. 永遠置頂的導覽列 (Navigation Bar)
+       ========================================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: #1a222d;
+      display: flex;
+      justify-content: space-around; /* 按鈕平均分配空間 */
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000; /* 確保導覽列永遠在最上層 */
+    }
+
+    /* 導覽列按鈕 */
+    .nav-btn {
+      background: none;
+      border: none;
+      color: #8fa0b3;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 10px 5px;
+      cursor: pointer;
+      width: 33.33%; /* 三個按鈕平分寬度，手機上好點擊 */
+      height: 100%;
+      transition: all 0.2s ease;
+      border-bottom: 3px solid transparent;
+    }
+
+    /* 當前選中按鈕的樣式（發光金黃色，很有遊戲感） */
+    .nav-btn.active {
+      color: #ffcc00;
+      border-bottom: 3px solid #ffcc00;
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    /* ==========================================
+       2. 下方內容區塊
+       ========================================== */
+    .content-container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    /* 預設所有的頁面內容都是隱藏的 */
+    .page-section {
+      display: none;
+      animation: fadeIn 0.3s ease; /* 切換時的小動畫 */
+    }
+
+    /* 只有加上 .active 的區塊才會顯示 */
+    .page-section.active {
+      display: block;
+    }
+
+    /* 簡單的淡入動畫 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 測試用的內容框樣式 */
+    .card-placeholder {
+      background: #232c3d;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid #34445c;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <button class="nav-btn active" onclick="switchPage('view-page', this)">查看牌組</button>
+    <button class="nav-btn" onclick="switchPage('add-page', this)">新增牌組</button>
+    <button class="nav-btn" onclick="switchPage('edit-page', this)">編輯牌組</button>
+  </nav>
+
+  <main class="content-container">
+    
+    <section id="view-page" class="page-section active">
+      <h2>👁️ 查看牌組</h2>
+      <div class="card-placeholder">
+        <p>【這裡是未來的互動圖片放置區】</p>
+        <p>稍後我們會把你的《Shadowverse》牌組圖片和透明點擊按鈕放在這裡。</p>
+      </div>
+    </section>
+
+    <section id="add-page" class="page-section">
+      <h2>➕ 新增牌組</h2>
+      <div class="card-placeholder">
+        <p>【這裡是新增牌組的功能區】</p>
+        <p>未來可以在這裡輸入新牌組的資訊或上傳新截圖。</p>
+      </div>
+    </section>
+
+    <section id="edit-page" class="page-section">
+      <h2>✏️ 編輯牌組</h2>
+      <div class="card-placeholder">
+        <p>【這裡是編輯頁面】</p>
+        <p>未來可以在這裡修改現有卡牌的用法說明。</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function switchPage(pageId, clickedButton) {
+      // 1. 隱藏所有頁面區塊
+      const sections = document.querySelectorAll('.page-section');
+      sections.forEach(section => {
+        section.classList.remove('active');
+      });
+
+      // 2. 取消所有導覽列按鈕的高亮狀態
+      const buttons = document.querySelectorAll('.nav-btn');
+      buttons.forEach(button => {
+        button.classList.remove('active');
+      });
+
+      // 3. 顯示被點擊的頁面區塊
+      document.getElementById(pageId).classList.add('active');
+
+      // 4. 將點擊的按鈕設為高亮
+      clickedButton.classList.add('active');
+      
+      // 手機貼心功能：點擊切換後，自動滾動回頂部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>
