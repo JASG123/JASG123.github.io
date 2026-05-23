@@ -190,17 +190,15 @@
     }
 
     /* ==========================================
-       4. 【全新修改】仿遊戲內直立卡牌 RWD 網格樣式
+       4. 直立卡牌網格與刪除按鈕樣式
        ========================================== */
     .card-grid {
       display: grid;
-      /* minmax(110px) 確保在小手機螢幕上也能完美排下一排 3 張卡 */
       grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
       gap: 15px;
       width: 100%;
     }
 
-    /* 單張卡牌容器：直立結構 */
     .card-item {
       background: #1c2430;
       border: 1px solid #2d3b4f;
@@ -214,33 +212,30 @@
       animation: fadeIn 0.2s ease;
     }
 
-    /* 卡牌圖片包裹器：用來將圖片裁切成仿遊戲比例 */
     .card-image-wrapper {
       position: relative;
       width: 100%;
-      padding-top: 135%; /* 控制卡牌的長寬比 */
+      padding-top: 135%; 
       border-radius: 6px;
       overflow: hidden;
       background-color: #12161a;
       border: 1px solid #34445c;
     }
 
-    /* 卡牌圖片本體 */
     .card-thumbnail {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* 像遊戲一樣裁切填滿 */
+      object-fit: cover; 
     }
 
-    /* 仿遊戲左上角的綠色費用圈圈 */
     .card-cost {
       position: absolute;
       top: 4px;
       left: 4px;
-      background: linear-gradient(135deg, #4ade80, #16a34a); /* 仿遊戲綠色法力圓圈 */
+      background: linear-gradient(135deg, #4ade80, #16a34a); 
       color: white;
       font-weight: bold;
       text-shadow: 0 1px 2px rgba(0,0,0,0.8);
@@ -256,7 +251,31 @@
       border: 1px solid #86efac;
     }
 
-    /* 卡片名稱：置於圖片下方 */
+    /* 新增：右上角紅色微型刪除按鈕 */
+    .card-delete-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(239, 68, 68, 0.9); /* 紅色半透明 */
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      transition: background 0.2s;
+    }
+    .card-delete-btn:hover {
+      background: rgb(220, 38, 38);
+    }
+
     .card-name {
       font-size: 12px;
       color: #e2e8f0;
@@ -265,16 +284,15 @@
       margin: 8px 0 4px 0;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap; /* 字數太長自動變 ... */
+      white-space: nowrap; 
     }
 
-    /* 【關鍵修改】張數標籤：死死固定在最正下方中央 */
     .card-count {
       color: #ffffff;
       font-weight: bold;
       font-size: 12px;
       background: rgba(0, 0, 0, 0.6);
-      border: 1px solid #ffcc00; /* 金色小框 */
+      border: 1px solid #ffcc00; 
       padding: 1px 10px;
       border-radius: 20px;
       text-align: center;
@@ -347,8 +365,14 @@
   </main>
 
   <script>
-    let myDeckData = [];
+    // 【關鍵優化】一開網頁，先去瀏覽器緩存讀取舊資料，如果沒有才用空陣列 []
+    let myDeckData = JSON.parse(localStorage.getItem('sv_deck_storage')) || [];
     let currentSelectedImageBase64 = "";
+
+    // 網頁完全載入後，立刻把之前存著的卡牌畫出來
+    window.onload = function() {
+      renderCardGrid();
+    };
 
     function switchPage(pageId, clickedButton) {
       document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
@@ -380,7 +404,6 @@
         return;
       }
 
-      // 如果沒選圖片，就給一個帥氣的暗色卡牌虛擬底色
       const finalImage = currentSelectedImageBase64 || "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='135' style='background:%23232c3d;'></svg>";
 
       const newCard = {
@@ -391,6 +414,10 @@
       };
 
       myDeckData.push(newCard);
+      
+      // 【關鍵優化】將更新後的陣列轉成字串，寫入瀏覽器的永久儲存區
+      localStorage.setItem('sv_deck_storage', JSON.stringify(myDeckData));
+      
       renderCardGrid();
 
       // 重設輸入表單
@@ -402,14 +429,26 @@
       document.getElementById('card-name').focus();
     }
 
-    // 更新後的直立式卡牌渲染 HTML
+    // 新增：刪除單張卡牌的函數
+    function deleteCard(index) {
+      // 從陣列中剔除點擊的那張卡
+      myDeckData.splice(index, 1);
+      // 同步更新到 localStorage 覆蓋舊資料
+      localStorage.setItem('sv_deck_storage', JSON.stringify(myDeckData));
+      // 重新繪製畫面
+      renderCardGrid();
+    }
+
     function renderCardGrid() {
       const gridContainer = document.getElementById('card-grid-container');
       gridContainer.innerHTML = ''; 
 
-      myDeckData.forEach(card => {
+      // 利用 index 追蹤每張卡在陣列裡的位置，方便點擊刪除
+      myDeckData.forEach((card, index) => {
         const cardHtml = `
           <div class="card-item">
+            <button class="card-delete-btn" onclick="deleteCard(${index})">✕</button>
+            
             <div class="card-image-wrapper">
               <div class="card-cost">${card.cost}</div>
               <img src="${card.image}" class="card-thumbnail" alt="卡片小圖">
